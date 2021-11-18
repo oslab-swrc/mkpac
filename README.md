@@ -27,8 +27,8 @@ $> patch -p1 < mkpac-txopt.patch
 $> patch -p0 < mkpax-rxopt.patch
 ```
 - Test environment set-up
-  - OVS (Kernel Mode) Packet Forwarding 
-  - 40G traffic generation using DPDK-Pktgen
+  - OVS (Kernel Mode) Packet Forwarding is used to forward packet from RX to TX port.
+  - 40G traffic is generated using DPDK-Pktgen for testing the perf.
   
 ## Other resources
 - [Middleware 2018 paper](https://dl.acm.org/doi/abs/10.1145/3284014.3284022)
