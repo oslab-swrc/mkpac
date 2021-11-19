@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-only
+// Portions Copyright (c) 2021 Electronics and Telecommunications Research Institute
+
 /*******************************************************************************
  *
  * Intel Ethernet Controller XL710 Family Linux Driver
@@ -292,14 +295,14 @@ i40e_status i40e_read_nvm_word(struct i40e_hw *hw, u16 offset,
 {
 	enum i40e_status_code ret_code = 0;
 
-	ret_code = i40e_acquire_nvm(hw, I40E_RESOURCE_READ);
-	if (!ret_code) {
-		if (hw->flags & I40E_HW_FLAG_AQ_SRCTL_ACCESS_ENABLE) {
+	if (hw->flags & I40E_HW_FLAG_AQ_SRCTL_ACCESS_ENABLE) {
+		ret_code = i40e_acquire_nvm(hw, I40E_RESOURCE_READ);
+		if (!ret_code) {
 			ret_code = i40e_read_nvm_word_aq(hw, offset, data);
-		} else {
-			ret_code = i40e_read_nvm_word_srctl(hw, offset, data);
+			i40e_release_nvm(hw);
 		}
-		i40e_release_nvm(hw);
+	} else {
+		ret_code = i40e_read_nvm_word_srctl(hw, offset, data);
 	}
 	return ret_code;
 }

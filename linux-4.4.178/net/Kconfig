@@ -395,3 +395,9 @@ config HAVE_BPF_JIT
 
 config HAVE_EBPF_JIT
 	bool
+
+config MKPAC_TX_LOCKS
+        def_bool n
+
+config MKPAC_I40E
+        def_bool n

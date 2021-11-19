@@ -1,0 +1,10 @@
+--- drivers/net/ethernet/intel/i40e/Makefile	2019-04-03 13:23:29.000000000 +0900
++++ Makefile	2021-11-19 09:21:19.031993620 +0900
+@@ -39,6 +39,7 @@
+ 	i40e_nvm.o	\
+ 	i40e_debugfs.o	\
+ 	i40e_diag.o	\
++	i40e_prealloc.o	\
+ 	i40e_txrx.o	\
+ 	i40e_ptp.o	\
+ 	i40e_virtchnl_pf.o

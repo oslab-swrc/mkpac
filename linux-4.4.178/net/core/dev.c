@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Portions Copyright (c) 2021 Electronics and Telecommunications Research Institute
+
 /*
  * 	NET3	Protocol independent device support routines.
  *
@@ -2962,7 +2965,11 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
 	if (unlikely(contended))
 		spin_lock(&q->busylock);
 
+#ifndef CONFIG_MKPAC_TX_LOCKS
 	spin_lock(root_lock);
+#endif
+
+
 	if (unlikely(test_bit(__QDISC_STATE_DEACTIVATED, &q->state))) {
 		kfree_skb(skb);
 		rc = NET_XMIT_DROP;
@@ -2996,7 +3003,9 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
 			__qdisc_run(q);
 		}
 	}
+#ifndef CONFIG_MKPAC_TX_LOCKS
 	spin_unlock(root_lock);
+#endif
 	if (unlikely(contended))
 		spin_unlock(&q->busylock);
 	return rc;
@@ -3110,8 +3119,13 @@ struct netdev_queue *netdev_pick_tx(struct net_device *dev,
 	if (dev->real_num_tx_queues != 1) {
 		const struct net_device_ops *ops = dev->netdev_ops;
 		if (ops->ndo_select_queue)
-			queue_index = ops->ndo_select_queue(dev, skb, accel_priv,
-							    __netdev_pick_tx);
+//#ifdef CONFIG_MKPAC_TX_LOCKS
+//                      queue_index = __netdev_pick_tx(dev, skb);
+//#else
+                        queue_index = ops->ndo_select_queue(dev, skb, accel_priv,
+                                                            __netdev_pick_tx);
+//#endif
+
 		else
 			queue_index = __netdev_pick_tx(dev, skb);
 

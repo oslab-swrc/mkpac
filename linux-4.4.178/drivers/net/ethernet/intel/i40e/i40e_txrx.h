@@ -1,3 +1,6 @@
+/* SPDX-License-Identifier: GPL-2.0-only */
+/* Portions Copyright (c) 2021 Electronics and Telecommunications Research Institute */
+
 /*******************************************************************************
  *
  * Intel Ethernet Controller XL710 Family Linux Driver
@@ -27,6 +30,7 @@
 #ifndef _I40E_TXRX_H_
 #define _I40E_TXRX_H_
 
+
 /* Interrupt Throttling and Rate Limiting Goodies */
 
 #define I40E_MAX_ITR               0x0FF0  /* reg uses 2 usec resolution */
@@ -44,6 +48,14 @@
 #define I40E_MIN_INT_RATE          250     /* ~= 1000000 / (I40E_MAX_ITR * 2) */
 #define I40E_MAX_INT_RATE          500000  /* == 1000000 / (I40E_MIN_ITR * 2) */
 #define I40E_DEFAULT_IRQ_WORK      256
+
+//This value is set adaptively based on number of elements pending to be cleaned-up in TX ring
+//For small packet sizes and for 40G/100G NIC, this value is set to the maximum queue size i.e. 4096
+//as the incoming and outgoing packet per second rate is very high.//mKPAC
+#ifndef CONFIG_MKPAC_TX_LOCKS
+ #define I40E_DEFAULT_IRQ_WORK      4096
+#endif
+
 #define ITR_TO_REG(setting) ((setting & ~I40E_ITR_DYNAMIC) >> 1)
 #define ITR_IS_DYNAMIC(setting) (!!(setting & I40E_ITR_DYNAMIC))
 #define ITR_REG_TO_USEC(itr_reg) (itr_reg << 1)
@@ -240,6 +252,8 @@ struct i40e_ring {
 		struct i40e_tx_buffer *tx_bi;
 		struct i40e_rx_buffer *rx_bi;
 	};
+	int rx_bi_prealloc_index; //mKPAC
+	int tx_bi_prealloc_index; //mKPAC
 	unsigned long state;
 	u16 queue_index;		/* Queue number of ring */
 	u8 dcb_tc;			/* Traffic class of ring */
@@ -325,6 +339,7 @@ int i40e_setup_tx_descriptors(struct i40e_ring *tx_ring);
 int i40e_setup_rx_descriptors(struct i40e_ring *rx_ring);
 void i40e_free_tx_resources(struct i40e_ring *tx_ring);
 void i40e_free_rx_resources(struct i40e_ring *rx_ring);
+
 int i40e_napi_poll(struct napi_struct *napi, int budget);
 #ifdef I40E_FCOE
 void i40e_tx_map(struct i40e_ring *tx_ring, struct sk_buff *skb,
@@ -352,3 +367,4 @@ static inline u32 i40e_get_head(struct i40e_ring *tx_ring)
 	return le32_to_cpu(*(volatile __le32 *)head);
 }
 #endif /* _I40E_TXRX_H_ */
+

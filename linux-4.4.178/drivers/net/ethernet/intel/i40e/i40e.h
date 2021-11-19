@@ -1,3 +1,6 @@
+/* SPDX-License-Identifier: GPL-2.0-only */
+/* Portions Copyright (c) 2021 Electronics and Telecommunications Research Institute */
+
 /*******************************************************************************
  *
  * Intel Ethernet Controller XL710 Family Linux Driver
@@ -62,6 +65,7 @@
 #include "i40e_virtchnl.h"
 #include "i40e_virtchnl_pf.h"
 #include "i40e_txrx.h"
+#include "i40e_prealloc.h"
 #include "i40e_dcb.h"
 
 /* Useful i40e defaults */
@@ -767,8 +771,6 @@ int i40e_vsi_add_vlan(struct i40e_vsi *vsi, s16 vid);
 int i40e_vsi_kill_vlan(struct i40e_vsi *vsi, s16 vid);
 struct i40e_mac_filter *i40e_put_mac_in_vlan(struct i40e_vsi *vsi, u8 *macaddr,
 					     bool is_vf, bool is_netdev);
-int i40e_del_mac_all_vlan(struct i40e_vsi *vsi, u8 *macaddr,
-			  bool is_vf, bool is_netdev);
 bool i40e_is_vsi_in_vlan(struct i40e_vsi *vsi);
 struct i40e_mac_filter *i40e_find_mac(struct i40e_vsi *vsi, u8 *macaddr,
 				      bool is_vf, bool is_netdev);

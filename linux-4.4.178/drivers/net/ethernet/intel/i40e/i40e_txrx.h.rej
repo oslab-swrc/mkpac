@@ -1,0 +1,12 @@
+--- drivers/net/ethernet/intel/i40e/i40e_txrx.h	2019-04-03 13:23:29.000000000 +0900
++++ i40e_txrx.h	2021-11-19 09:21:19.019993644 +0900
+@@ -44,7 +45,8 @@
+ #define I40E_ITR_DYNAMIC           0x8000  /* use top bit as a flag */
+ #define I40E_MIN_INT_RATE          250     /* ~= 1000000 / (I40E_MAX_ITR * 2) */
+ #define I40E_MAX_INT_RATE          500000  /* == 1000000 / (I40E_MIN_ITR * 2) */
+-#define I40E_DEFAULT_IRQ_WORK      256
++#define I40E_DEFAULT_IRQ_WORK      256 
++//#define I40E_DEFAULT_IRQ_WORK      4096 //Set to max value for adaptive cleanup/interrupt optimization-mKPAC 
+ #define ITR_TO_REG(setting) ((setting & ~I40E_ITR_DYNAMIC) >> 1)
+ #define ITR_IS_DYNAMIC(setting) (!!(setting & I40E_ITR_DYNAMIC))
+ #define ITR_REG_TO_USEC(itr_reg) (itr_reg << 1)

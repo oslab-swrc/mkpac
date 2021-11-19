@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Portions Copyright (c) 2021 Electronics and Telecommunications Research Institute
+
 /*
  * net/sched/sch_generic.c	Generic packet scheduler routines.
  *
@@ -152,12 +155,16 @@ int sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
 {
 	int ret = NETDEV_TX_BUSY;
 
+
+#ifndef CONFIG_MKPAC_TX_LOCKS
+
 	/* And release qdisc */
 	spin_unlock(root_lock);
 
 	/* Note that we validate skb (GSO, checksum, ...) outside of locks */
 	if (validate)
 		skb = validate_xmit_skb_list(skb, dev);
+#endif
 
 	if (likely(skb)) {
 		HARD_TX_LOCK(dev, txq, smp_processor_id());
@@ -169,7 +176,10 @@ int sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
 		spin_lock(root_lock);
 		return qdisc_qlen(q);
 	}
-	spin_lock(root_lock);
+
+#ifndef CONFIG_MKPAC_TX_LOCKS
+        spin_lock(root_lock);
+#endif
 
 	if (dev_xmit_complete(ret)) {
 		/* Driver sent out skb successfully or skb was consumed */
