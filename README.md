@@ -3,6 +3,8 @@ Kernel Packet Processing for Manycore Systems
 
 This work is aimed at improving the Linux kernel packet processing performance for High-Speed NICs (40G/100G) on Manycore systems. We focus on the kernel space applications (e.g. software based packet forwarding (OVS kernel mode), software based firewall, and other NFV use-cases) and aim to optimize the kernel network stack performance by mitigating high-impact overheads residing in network stack of Linux kernel and by leveraging the availability of manycores. With TX and RX path optimizations, considerable performance improvement can be achieved for small packet sizes.
 
+mkpac is provided under the terms of the GNU General Public License v2.0.
+
 ## Key Optimizations
 - TX Optimizations
   - Adaptive TX cleanup
@@ -12,19 +14,15 @@ This work is aimed at improving the Linux kernel packet processing performance f
   - Ring-descriptors pre-allocation
 
 ## Prerequisites
-- Linux Kernel version 4.4.1
+- Linux Kernel version 4.4.178
 - Intel XL710 40G NIC
 
-## Configuration and Testing
+## Build and install the kernel
 - TX and RX Optimizations
-```{.sh}
-$> git clone https://github.com/oslab-swrc/mkpac.git
 ```
-```{.sh}
-$> patch -p1 < mkpac-txopt.patch
-```
-```{.sh}
-$> patch -p0 < mkpax-rxopt.patch
+    - mkpac was developed on Linux 4.4.178
+    - The Linux kernel source with mkpac patches is available in ./linux-4.4.178
+    - Build and install the kernel.
 ```
 - Test environment set-up
   - OVS (Kernel Mode) Packet Forwarding is used to forward packet from RX to TX port.
